@@ -10,6 +10,7 @@ private:
 	T data;
 	DataNode <T>*nextNode;
 public:
+	// the default constructor should only be triggered by the LinkedList's headNode, thus it should be safe to set data to zero
 	DataNode()
 	{
 		data = 0;
@@ -20,6 +21,7 @@ public:
 		data = value;
 		nextNode = nullptr;
 	}
+	// the data and pointer members are private, thus LinkedList class needs to be delcared as a friend
 	template <class T>
 	friend class LinkedList;
 };
@@ -42,6 +44,9 @@ public:
 	{
 		first = nullptr;
 		last = nullptr;
+
+		// recast the first pointer, a DataNode<T>, into a DataNode<int> that can be stored in headNode's nextNode pointer
+		// otherwise, headNode's nextNode pointer will not accept the value
 		headNode.nextNode = reinterpret_cast<DataNode<int>*>(first);
 	}
 
@@ -69,6 +74,7 @@ public:
 		}
 	}
 
+	// check the list for items, if the list is empty return true, else return false
 	bool isEmpty()
 	{
 		if (!first)
@@ -81,9 +87,10 @@ public:
 		}
 	}
 
+	// remove all items in the list
 	void emptyList()
 	{
-		// if the list is empty, set first and last to null and return
+		// if the list is empty, set first and last to null for redundency and return
 		if (!first)
 		{
 			first = nullptr;
@@ -93,20 +100,20 @@ public:
 
 		else
 		{
-			DataNode<T> *traversalNode = first;
+			DataNode<T> *currentNode = first;
 			DataNode<T> *nextNode = nullptr;
 
 			// While nodePtr is not at the end of the list...
-			while (traversalNode != nullptr)
+			while (currentNode != nullptr)
 			{
 				// Save a pointer to the next node.
-				nextNode = traversalNode->nextNode;
+				nextNode = currentNode->nextNode;
 
 				// Delete the current node.
-				delete traversalNode;
+				delete currentNode;
 
 				// Position nodePtr at the next node.
-				traversalNode = nextNode;
+				currentNode = nextNode;
 			}
 			first = nullptr;
 			last = nullptr;
@@ -114,6 +121,7 @@ public:
 		}
 	}
 
+	// this is a debug function that prints out the first item in the list
 	void printFirst()
 	{
 		// if there are no items in the list, display the message
@@ -127,6 +135,7 @@ public:
 		}
 	}
 
+	// this is a debug function that prints out the last item in the list
 	void printLast()
 	{
 		// if there are no items in the list, display the message
@@ -250,19 +259,61 @@ public:
 		}
 	}
 
-
-	void top(T &passedByReference)
+	// return the data stored in the first node
+	T getFirst()
 	{
-		// if the head is null, print the error message
+		// if there are no items in the list, display the message
 		if (!first)
+		{
 			std::cout << "error: list is empty";
+		}
 
-		// else, make the passed reference equal to the data stored in the first item
 		else
 		{
-			passedByReference = first->data;
+			return first->data;
 		}
 	}
+
+	// return the data stored in the last node
+	T getLast()
+	{
+		// if there are no items in the list, display the message
+		if (!last)
+		{
+			std::cout << "error: list is empty";
+		}
+
+		else
+		{
+			return last->data;
+		}
+	}
+
+	// return the data stored in the index value
+	T getIndex(int index)
+	{
+		DataNode<T> *tempPtr = first;
+
+		for (int count = 0; (count < index && count < headNode.data); count++)
+		{
+			tempPtr = tempPtr->nextNode;
+		}
+
+		return tempPtr->data;
+	}
+
+	//void top(T &passedByReference)
+	//{
+	//	// if the head is null, print the error message
+	//	if (!first)
+	//		std::cout << "error: list is empty";
+	//
+	//	// else, make the passed reference equal to the data stored in the first item
+	//	else
+	//	{
+	//		passedByReference = first->data;
+	//	}
+	//}
 
 	void insert_node(T value, int index)
 	{
@@ -320,6 +371,111 @@ public:
 		headNode.data++;
 	}
 
+	int searchNodes(T searchValue)
+	{
+		// search the nodes for the value sent
+		// if the value is found, return the position and maybe cout the value
+		// if the value was not found, return -1, simalar to a binary search
+
+
+		// If the list is empty, return -1
+		if (!first)
+			return -1;
+
+		// if the first node is the value, return its index, 1
+		else if (first->data == searchValue)
+		{
+			return 0;
+		}
+
+		// else, traverse the list looking for the value
+		else
+		{
+			int listLocation = 0;
+			DataNode<T> *currentNode = first; // To traverse the list
+
+			// Initialize nodePtr to head of list and increment the location counter
+			//listLocation++;
+
+			// Skip all nodes whose value member is not equal to searchValue.
+			while (currentNode != nullptr && currentNode->data != searchValue)
+			{
+				currentNode = currentNode->nextNode;
+				listLocation++;
+			}
+
+			//  if the value was not found, and the list is at the end, return -1
+			if (currentNode == nullptr)
+			{
+				return -1;
+			}
+
+			// else, return the index of where the value was found
+			else
+			{
+				return listLocation;
+			}
+		}
+	}
+
+	void deleteNode(T searchValue)
+	{
+		DataNode<T> *currentNode = first; // To traverse the list
+		DataNode<T> *previousNode = nullptr; // To point to the previous node
+
+		// If the list is empty, do nothing.
+		if (!first)
+			return;
+
+		// Determine if the first node is the one.
+		else if (first->data == searchValue)
+		{
+			first = currentNode->nextNode;
+			delete currentNode;
+
+			// if the list only has one item, set first and last to nullptr
+			if (headNode.data == 1)
+			{
+				first = nullptr;
+				last = nullptr;
+			}
+		}
+
+		else
+		{
+			// Skip all nodes whose value member is not equal to searchValue.
+			while (currentNode != nullptr && currentNode->data != searchValue)
+			{
+				previousNode = currentNode;
+				currentNode = currentNode->nextNode;
+			}
+
+			// if the list does not have the value, return
+			if (currentNode == nullptr)
+			{
+				return;
+			}
+
+			// if the last item in the list has the desired value, set previousNode->nextNode to null and delete the current node
+			// and update last to point to the previous node
+			else if (currentNode->data == searchValue && currentNode->nextNode == nullptr)
+			{
+				previousNode->nextNode = nullptr;
+				delete currentNode;
+				last = previousNode;
+			}
+
+			// if the list continues past the current node, update the link chain and delete the current node
+			else if (currentNode->nextNode != nullptr)
+			{
+				previousNode->nextNode = currentNode->nextNode;
+				delete currentNode;
+			}
+		}
+		// update the list size
+		headNode.data--;
+	}
+
 	void displayList()
 	{
 		// if there are no items in the list, display the message
@@ -339,7 +495,7 @@ public:
 				tempPtr = tempPtr->nextNode;
 			} while (tempPtr != nullptr);
 
-			std::cout << "list count: " << headNode.data;
+			//std::cout << "list count: " << headNode.data;
 		}
 	}
 
