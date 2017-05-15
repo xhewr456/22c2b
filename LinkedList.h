@@ -24,6 +24,8 @@ public:
 	// the data and pointer members are private, thus LinkedList class needs to be delcared as a friend
 	template <class T>
 	friend class LinkedList;
+	template <class T>
+	friend class QueueADT;
 };
 
 
@@ -53,24 +55,24 @@ public:
 	// destructor
 	~LinkedList()
 	{
-		DataNode<T> *traversalNode; // To traverse the list
+		DataNode<T> *currentNode; // To traverse the list
 		DataNode<T> *nextNode; // To point to the next node
 
 		// Position nodePtr at the head of the list.
-		traversalNode = first;
+		currentNode = first;
 
 		// While nodePtr is not at the end of the list...
-		while (traversalNode != nullptr)
+		while (currentNode != nullptr)
 		{
 			// Save a pointer to the next node.
-			nextNode = traversalNode->nextNode;
+			nextNode = currentNode->nextNode;
 
 			// Delete the current node.
-			delete traversalNode;
+			delete currentNode;
 			//headNode.data--;
 
 			// Position nodePtr at the next node.
-			traversalNode = nextNode;
+			currentNode = nextNode;
 		}
 	}
 
@@ -149,6 +151,7 @@ public:
 		}
 	}
 
+	// add a new node at the beginning of the list and update first
 	void push_first(T newData)
 	{
 		// dynamically create a new node and store value in it
@@ -171,9 +174,9 @@ public:
 		headNode.data++;
 	}
 
+	// add a new node to the end of the list and update last as required
 	void push_last(T newData)
 	{
-		// push the new node as the last item in the list
 		DataNode<T> *newNode = new DataNode<T>(newData);
 
 		// if there are no items in the list, make newNode the first item and make last point to newNode
@@ -194,9 +197,10 @@ public:
 		headNode.data++;
 	}
 
+	// remove the first item from the list and update first as required
 	void pop_first()
 	{
-		// remove the first item in the list
+		DataNode<T> *tempPtr = first;
 
 		if (!first)
 		{
@@ -206,7 +210,6 @@ public:
 		// if there is only one item in the list, copy the location of the first item, set first and last to null and delete the node
 		else if (first->nextNode == nullptr)
 		{
-			DataNode<T> *tempPtr = first;
 			first = nullptr;
 			last = nullptr;
 			delete tempPtr;
@@ -215,13 +218,13 @@ public:
 
 		else
 		{
-			DataNode<T> *tempPtr = first;
 			first = tempPtr->nextNode;
 			delete tempPtr;
 			headNode.data--;
 		}
 	}
 
+	// remove the last item in the list and update last as required
 	void pop_last()
 	{
 		// remove the last item in the list
@@ -262,59 +265,31 @@ public:
 	// return the data stored in the first node
 	T getFirst()
 	{
-		// if there are no items in the list, display the message
-		if (!first)
-		{
-			std::cout << "error: list is empty";
-		}
-
-		else
-		{
-			return first->data;
-		}
+		return first->data;
 	}
 
 	// return the data stored in the last node
 	T getLast()
 	{
-		// if there are no items in the list, display the message
-		if (!last)
-		{
-			std::cout << "error: list is empty";
-		}
-
-		else
-		{
-			return last->data;
-		}
+		return last->data;
 	}
 
-	// return the data stored in the index value
+	// return the data stored at the index value
 	T getIndex(int index)
 	{
-		DataNode<T> *tempPtr = first;
+		DataNode<T> *currentNode = first;
 
 		for (int count = 0; (count < index && count < headNode.data); count++)
 		{
-			tempPtr = tempPtr->nextNode;
+			currentNode = currentNode->nextNode;
 		}
 
-		return tempPtr->data;
+		return currentNode->data;
 	}
 
-	//void top(T &passedByReference)
-	//{
-	//	// if the head is null, print the error message
-	//	if (!first)
-	//		std::cout << "error: list is empty";
-	//
-	//	// else, make the passed reference equal to the data stored in the first item
-	//	else
-	//	{
-	//		passedByReference = first->data;
-	//	}
-	//}
-
+	// this function takes two arguments, a <T> value, and <int>
+	// the function will create a new node with the <T> value and insert it into posistion <int>
+	// the function will NOT sort the value, only add it to the list at the requested location
 	void insert_node(T value, int index)
 	{
 		// dynamically create a new node and store value in it
@@ -371,13 +346,10 @@ public:
 		headNode.data++;
 	}
 
+	// use a linear search to look for the value and return its location if found
+	// if the value was not found, return -1
 	int searchNodes(T searchValue)
 	{
-		// search the nodes for the value sent
-		// if the value is found, return the position and maybe cout the value
-		// if the value was not found, return -1, simalar to a binary search
-
-
 		// If the list is empty, return -1
 		if (!first)
 			return -1;
@@ -393,9 +365,6 @@ public:
 		{
 			int listLocation = 0;
 			DataNode<T> *currentNode = first; // To traverse the list
-
-			// Initialize nodePtr to head of list and increment the location counter
-			//listLocation++;
 
 			// Skip all nodes whose value member is not equal to searchValue.
 			while (currentNode != nullptr && currentNode->data != searchValue)
@@ -418,7 +387,9 @@ public:
 		}
 	}
 
-	void deleteNode(T searchValue)
+	// use a linear search to look for the value, remove the node, and update the link chain as required
+	// if the value was not found, return
+	void deleteNode(T deleteValue)
 	{
 		DataNode<T> *currentNode = first; // To traverse the list
 		DataNode<T> *previousNode = nullptr; // To point to the previous node
@@ -428,7 +399,7 @@ public:
 			return;
 
 		// Determine if the first node is the one.
-		else if (first->data == searchValue)
+		else if (first->data == deleteValue)
 		{
 			first = currentNode->nextNode;
 			delete currentNode;
@@ -444,7 +415,7 @@ public:
 		else
 		{
 			// Skip all nodes whose value member is not equal to searchValue.
-			while (currentNode != nullptr && currentNode->data != searchValue)
+			while (currentNode != nullptr && currentNode->data != deleteValue)
 			{
 				previousNode = currentNode;
 				currentNode = currentNode->nextNode;
@@ -458,7 +429,7 @@ public:
 
 			// if the last item in the list has the desired value, set previousNode->nextNode to null and delete the current node
 			// and update last to point to the previous node
-			else if (currentNode->data == searchValue && currentNode->nextNode == nullptr)
+			else if (currentNode->data == deleteValue && currentNode->nextNode == nullptr)
 			{
 				previousNode->nextNode = nullptr;
 				delete currentNode;
@@ -476,6 +447,7 @@ public:
 		headNode.data--;
 	}
 
+	// print out all the items in the list, if there are any items to print
 	void displayList()
 	{
 		// if there are no items in the list, display the message
@@ -487,13 +459,13 @@ public:
 		// else, display all the nodes
 		else
 		{
-			DataNode<T> *tempPtr = first;
+			DataNode<T> *currentNode = first;
 
 			do
 			{
-				std::cout << tempPtr->data << endl;
-				tempPtr = tempPtr->nextNode;
-			} while (tempPtr != nullptr);
+				std::cout << currentNode->data << endl;
+				currentNode = currentNode->nextNode;
+			} while (currentNode != nullptr);
 
 			//std::cout << "list count: " << headNode.data;
 		}
