@@ -3,6 +3,15 @@
 #include<iostream>
 
 
+/*
+This file contains the data node class and the LinkedList class that uses the nodes to store data
+and link them data together with pointers
+
+*/
+
+
+// the DataNode class has two memembers, a data variable to store data and a pointer variable that
+// points to the next node, if there is another node in the chain
 template <class T>
 class DataNode
 {
@@ -33,20 +42,20 @@ template <class T>
 class LinkedList
 {
 private:
-	DataNode<int> headNode;
-	DataNode<T> *first;
-	DataNode<T> *last;
+	DataNode<int> headNode;  // headNode's data member is used to track how many items are in the list
+	DataNode<T> *first;  // pointer to the first item in the list
+	DataNode<T> *last;  // pointer to the last item in the list
 
 protected:
 	// protected functions
 
-	// returns a pointer of first
+	// returns a pointer of first, and is protected because only QueueADT is using this function and not the user
 	DataNode<T> *getFirstPtr()
 	{
 		return first;
 	}
 
-	// returns a pointer of last
+	// returns a pointer of last, and is protected because only QueueADT is using this function and not the user
 	DataNode<T> *getLastPtr()
 	{
 		return last;
@@ -64,7 +73,7 @@ public:
 		headNode.nextNode = reinterpret_cast<DataNode<int>*>(first);
 	}
 
-	// destructor
+	// destructor, removes all the items in the list
 	~LinkedList()
 	{
 		DataNode<T> *currentNode; // To traverse the list
@@ -163,7 +172,7 @@ public:
 		}
 	}
 
-	// add a new node at the beginning of the list and update first
+	// add a new node at the beginning of the list, update first, and increment the list counter
 	void push_first(T newData)
 	{
 		// dynamically create a new node and store value in it
@@ -186,7 +195,7 @@ public:
 		headNode.data++;
 	}
 
-	// add a new node to the end of the list and update last as required
+	// add a new node to the end of the list, update last as required, and increment the list counter
 	void push_last(T newData)
 	{
 		DataNode<T> *newNode = new DataNode<T>(newData);
@@ -209,7 +218,7 @@ public:
 		headNode.data++;
 	}
 
-	// remove the first item from the list and update first as required
+	// remove the first item from the list, update first as required, and decrement the list counter
 	void pop_first()
 	{
 		DataNode<T> *tempPtr = first;
@@ -236,7 +245,7 @@ public:
 		}
 	}
 
-	// remove the last item in the list and update last as required
+	// remove the last item in the list, update last as required, and decrement the list counter
 	void pop_last()
 	{
 		// remove the last item in the list
@@ -399,7 +408,7 @@ public:
 		}
 	}
 
-	// use a linear search to look for the value, remove the node, and update the link chain as required
+	// use a linear search to look for the value, remove the node, decrment the list counter, and update the link chain as required
 	// if the value was not found, return
 	void deleteNode(T deleteValue)
 	{

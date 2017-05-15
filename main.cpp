@@ -2,6 +2,7 @@
 #include<string>
 #include"LinkedList.h"
 #include"QueueADT.h"
+#include"Currency.h"
 
 using namespace std;
 
@@ -10,6 +11,7 @@ int main()
 {
 	QueueADT<string> queuedList;
 	LinkedList<double> testList;
+	QueueADT<Currency> currencyQueue;
 	testList.push_first(11);
 	testList.push_first(7);
 	testList.push_first(5);
@@ -97,6 +99,15 @@ int main()
 	cout << endl << "rear returns: "; 
 	queuedList.printRear();
 	cout << endl;
+	Currency currency1("Dollar", "Cent", 12, 55);
+	Currency currency2("Euro", "Pence", 2, 78);
+	Currency currency3("Peso", "Cento", 5, 97);
+	Currency currency4("Ruble", "Kopecks", 43, 15);
+	currencyQueue.enQueue(currency1);
+	currencyQueue.enQueue(currency2);
+	currencyQueue.enQueue(currency3);
+	currencyQueue.enQueue(currency4);
+	currencyQueue.displayQueue();
 	//int xyz;
 	//cout << endl << xyz;
 	cout << "\n\npress <Enter> to exit the program...";
