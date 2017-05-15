@@ -7,46 +7,75 @@ template <class T>
 class QueueADT : protected LinkedList<T>
 {
 private:
-	//DataNode<T> *front;
-	//DataNode<T> *rear;
+	DataNode<T> *frontPtr;
+	DataNode<T> *rearPtr;
 
 public:
 	// constuctor
 	QueueADT()
 	{
 		// clifford: is this needed?  both front and rear pointers are redundant to first and last from LinkedList
-		// clifford: also the code for front and rear don't compile
-		//front = this->first;
-		//rear = this->last;
+		frontPtr = this->getFirstPtr();
+		rearPtr = this->getLastPtr();
 	}
 
 	// destructor
-	~QueueADT()
+	//~QueueADT()
+	//{
+	//	// clifford: is this needed?
+	//}
+
+	// this is a debug function that prints out the first item in the queue
+	void printFront()
 	{
-		// clifford: is this needed?
+		// if there are no items in the queue, display the message
+		if (!frontPtr)
+		{
+			std::cout << "error: queue is empty";
+		}
+		else
+		{
+			std::cout << frontPtr->data;
+		}
+	}
+
+	// this is a debug function that prints out the last item in the queue
+	void printRear()
+	{
+		// if there are no items in the queue, display the message
+		if (!rearPtr)
+		{
+			std::cout << "error: queue is empty";
+		}
+		else
+		{
+			std::cout << rearPtr->data;
+		}
 	}
 
 	// add an item to the back of the queue
 	void enQueue(T addValue)
 	{
 		this->push_last(addValue);
+		rearPtr = this->getLastPtr();
 	}
 
 	// remove the first item in the queue
 	void deQueue()
 	{
 		this->pop_first();
+		frontPtr = this->getFirstPtr();
 	}
 
 	// return the value stored in the first item
-	T front()
+	T getFront()
 	{
 		return this->getFirst();
 		//std::cout << this->getFirst();
 	}
 
 	// return the value stored in the last item
-	T rear()
+	T getRear()
 	{
 		return this->getLast();
 		//std::cout << this->getLast();

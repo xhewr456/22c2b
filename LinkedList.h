@@ -40,6 +40,18 @@ private:
 protected:
 	// protected functions
 
+	// returns a pointer of first
+	DataNode<T> *getFirstPtr()
+	{
+		return first;
+	}
+
+	// returns a pointer of last
+	DataNode<T> *getLastPtr()
+	{
+		return last;
+	}
+
 public:
 	// constructor
 	LinkedList()

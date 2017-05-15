@@ -92,8 +92,11 @@ int main()
 	queuedList.deQueue();
 	cout << "display queue" << endl;
 	queuedList.displayQueue();
-	cout << endl << "front returns: " << queuedList.front();
-	cout << endl << "rear returns: " << queuedList.rear() << endl;
+	cout << endl << "front returns: ";
+	queuedList.printFront();
+	cout << endl << "rear returns: "; 
+	queuedList.printRear();
+	cout << endl;
 	//int xyz;
 	//cout << endl << xyz;
 	cout << "\n\npress <Enter> to exit the program...";
